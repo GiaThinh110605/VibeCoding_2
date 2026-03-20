@@ -19,7 +19,7 @@ router.post('/login', async (req, res) => {
   try {
     const { username, password } = req.body;
 
-    const [user] = await pool.query(
+    const user = await pool.query(
       'SELECT * FROM users WHERE username = $1',
       [username]
     );

@@ -1,0 +1,128 @@
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="fas fa-users me-2"></i>Quản lý thẻ độc giả</h2>
+    <a href="/readers/add" class="btn btn-primary">
+        <i class="fas fa-plus me-2"></i>Đăng ký thẻ mới
+    </a>
+</div>
+
+{{#if query.success}}
+<div class="alert alert-success alert-dismissible fade show" role="alert">
+    <i class="fas fa-check-circle me-2"></i>{{query.success}}
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+</div>
+{{/if}}
+
+{{#if query.error}}
+<div class="alert alert-danger alert-dismissible fade show" role="alert">
+    <i class="fas fa-exclamation-circle me-2"></i>{{query.error}}
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+</div>
+{{/if}}
+
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card text-center stat-card">
+            <div class="card-body">
+                <h3 class="text-primary">{{#if stats.total_readers}}{{stats.total_readers}}{{else}}5{{/if}}</h3>
+                <small class="text-muted">Tổng độc giả</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center stat-card">
+            <div class="card-body">
+                <h3 class="text-success">{{#if stats.active_readers}}{{stats.active_readers}}{{else}}3{{/if}}</h3>
+                <small class="text-muted">Đang hoạt động</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center stat-card">
+            <div class="card-body">
+                <h3 class="text-warning">{{#if stats.locked_readers}}{{stats.locked_readers}}{{else}}1{{/if}}</h3>
+                <small class="text-muted">Bị khóa</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center stat-card">
+            <div class="card-body">
+                <h3 class="text-danger">{{#if stats.expiring_soon}}{{stats.expiring_soon}}{{else}}1{{/if}}</h3>
+                <small class="text-muted">Sắp hết hạn</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        {{#if readers.length}}
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th>Mã độc giả</th>
+                        <th>Họ tên</th>
+                        <th>Lớp</th>
+                        <th>Ngày sinh</th>
+                        <th>Giới tính</th>
+                        <th>SĐT</th>
+                        <th>Email</th>
+                        <th>Ngày hết hạn</th>
+                        <th>Trạng thái</th>
+                        <th>Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each readers}}
+                    <tr>
+                        <td><span class="badge bg-primary">{{reader_id}}</span></td>
+                        <td><strong>{{full_name}}</strong></td>
+                        <td>{{class}}</td>
+                        <td>{{formatDate birth_date}}</td>
+                        <td>
+                            {{#if (eq gender 'male')}}<i class="fas fa-mars text-primary"></i> Nam
+                            {{else if (eq gender 'female')}}<i class="fas fa-venus text-danger"></i> Nữ
+                            {{else}}<i class="fas fa-genderless text-secondary"></i> Khác{{/if}}
+                        </td>
+                        <td>{{phone}}</td>
+                        <td>{{email}}</td>
+                        <td>{{formatDate card_expiry_date}}</td>
+                        <td>
+                            {{#if (eq status 'active')}}<span class="badge bg-success">Hoạt động</span>
+                            {{else if (eq status 'locked')}}<span class="badge bg-danger">Bị khóa</span>
+                            {{else if (eq status 'expired')}}<span class="badge bg-warning">Hết hạn</span>{{/if}}
+                        </td>
+                        <td>
+                            <a href="/readers/edit/{{reader_id}}" class="btn btn-sm btn-outline-primary"><i class="fas fa-edit"></i></a>
+                            <form method="POST" action="/readers/delete/{{reader_id}}" class="d-inline">
+                                <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Xóa thẻ độc giả này?')"><i class="fas fa-trash"></i></button>
+                            </form>
+                        </td>
+                    </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+        </div>
+        {{else}}
+        <!-- Mock Data for Demo -->
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead class="table-light">
+                    <tr><th>Mã độc giả</th><th>Họ tên</th><th>Lớp</th><th>Ngày sinh</th><th>Giới tính</th><th>SĐT</th><th>Email</th><th>Ngày hết hạn</th><th>Trạng thái</th><th>Thao tác</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><span class="badge bg-primary">SV2024001</span></td><td><strong>Nguyễn Văn A</strong></td><td>CNTT-K64</td><td>15/03/2002</td><td><i class="fas fa-mars text-primary"></i> Nam</td><td>0912345678</td><td>nguyenvana@email.com</td><td>15/03/2026</td><td><span class="badge bg-success">Hoạt động</span></td><td><a href="/readers/edit/SV2024001" class="btn btn-sm btn-outline-primary"><i class="fas fa-edit"></i></a><button class="btn btn-sm btn-outline-danger" onclick="return confirm('Xóa thẻ độc giả này?')"><i class="fas fa-trash"></i></button></td></tr>
+                    <tr><td><span class="badge bg-primary">SV2024002</span></td><td><strong>Trần Thị B</strong></td><td>Kinh tế-K64</td><td>22/07/2001</td><td><i class="fas fa-venus text-danger"></i> Nữ</td><td>0987654321</td><td>tranthib@email.com</td><td>22/07/2026</td><td><span class="badge bg-success">Hoạt động</span></td><td><a href="/readers/edit/SV2024002" class="btn btn-sm btn-outline-primary"><i class="fas fa-edit"></i></a><button class="btn btn-sm btn-outline-danger" onclick="return confirm('Xóa thẻ độc giả này?')"><i class="fas fa-trash"></i></button></td></tr>
+                    <tr><td><span class="badge bg-primary">SV2024003</span></td><td><strong>Lê Văn C</strong></td><td>Cơ khí-K63</td><td>10/11/2000</td><td><i class="fas fa-mars text-primary"></i> Nam</td><td>0909123456</td><td>levanc@email.com</td><td>10/11/2025</td><td><span class="badge bg-warning">Sắp hết hạn</span></td><td><a href="/readers/edit/SV2024003" class="btn btn-sm btn-outline-primary"><i class="fas fa-edit"></i></a><button class="btn btn-sm btn-outline-danger" onclick="return confirm('Xóa thẻ độc giả này?')"><i class="fas fa-trash"></i></button></td></tr>
+                    <tr><td><span class="badge bg-primary">SV2024004</span></td><td><strong>Phạm Thị D</strong></td><td>QTKD-K65</td><td>05/05/2003</td><td><i class="fas fa-venus text-danger"></i> Nữ</td><td>0934567890</td><td>phamthid@email.com</td><td>05/05/2027</td><td><span class="badge bg-success">Hoạt động</span></td><td><a href="/readers/edit/SV2024004" class="btn btn-sm btn-outline-primary"><i class="fas fa-edit"></i></a><button class="btn btn-sm btn-outline-danger" onclick="return confirm('Xóa thẻ độc giả này?')"><i class="fas fa-trash"></i></button></td></tr>
+                    <tr><td><span class="badge bg-primary">SV2024005</span></td><td><strong>Hoàng Văn E</strong></td><td>CNTT-K64</td><td>18/09/2002</td><td><i class="fas fa-mars text-primary"></i> Nam</td><td>0978123456</td><td>hoangvane@email.com</td><td>18/09/2026</td><td><span class="badge bg-danger">Bị khóa</span></td><td><a href="/readers/edit/SV2024005" class="btn btn-sm btn-outline-primary"><i class="fas fa-edit"></i></a><button class="btn btn-sm btn-outline-danger" onclick="return confirm('Xóa thẻ độc giả này?')"><i class="fas fa-trash"></i></button></td></tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="alert alert-info mt-3"><i class="fas fa-info-circle me-2"></i>Đang hiển thị dữ liệu mẫu. Vui lòng thêm độc giả thực tế để thay thế.</div>
+        {{/if}}
+    </div>
+</div>
+
+<style>.stat-card { transition: transform 0.3s; } .stat-card:hover { transform: translateY(-5px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }</style>

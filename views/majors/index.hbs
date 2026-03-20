@@ -1,0 +1,67 @@
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="fas fa-graduation-cap me-2"></i>Quản lý ngành học</h2>
+    <a href="/majors/add" class="btn btn-primary">
+        <i class="fas fa-plus me-2"></i>Thêm ngành học
+    </a>
+</div>
+
+{{#if query.success}}
+<div class="alert alert-success alert-dismissible fade show" role="alert">
+    <i class="fas fa-check-circle me-2"></i>{{query.success}}
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+</div>
+{{/if}}
+
+{{#if query.error}}
+<div class="alert alert-danger alert-dismissible fade show" role="alert">
+    <i class="fas fa-exclamation-circle me-2"></i>{{query.error}}
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+</div>
+{{/if}}
+
+<div class="card">
+    <div class="card-body">
+        {{#if majors.length}}
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead class="table-light">
+                    <tr><th>Mã ngành</th><th>Tên ngành</th><th>Mô tả</th><th>Số lượng sách</th><th>Thao tác</th></tr>
+                </thead>
+                <tbody>
+                    {{#each majors}}
+                    <tr>
+                        <td><span class="badge bg-primary">{{major_id}}</span></td>
+                        <td><strong>{{major_name}}</strong></td>
+                        <td>{{description}}</td>
+                        <td><span class="badge bg-info">{{book_count}}</span></td>
+                        <td>
+                            <a href="/majors/edit/{{major_id}}" class="btn btn-sm btn-outline-primary"><i class="fas fa-edit"></i></a>
+                            <form method="POST" action="/majors/delete/{{major_id}}" class="d-inline">
+                                <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Xóa ngành học này?')"><i class="fas fa-trash"></i></button>
+                            </form>
+                        </td>
+                    </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+        </div>
+        {{else}}
+        <!-- Mock Data for Demo -->
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead class="table-light">
+                    <tr><th>Mã ngành</th><th>Tên ngành</th><th>Mô tả</th><th>Số lượng sách</th><th>Thao tác</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><span class="badge bg-primary">CNTT</span></td><td><strong>Công nghệ thông tin</strong></td><td>Chuyên ngành về máy tính và phần mềm</td><td><span class="badge bg-info">25</span></td><td><a href="/majors/edit/CNTT" class="btn btn-sm btn-outline-primary"><i class="fas fa-edit"></i></a><button class="btn btn-sm btn-outline-danger" onclick="return confirm('Xóa ngành học này?')"><i class="fas fa-trash"></i></button></td></tr>
+                    <tr><td><span class="badge bg-primary">KT</span></td><td><strong>Kinh tế</strong></td><td>Chuyên ngành về kinh tế và quản lý</td><td><span class="badge bg-info">18</span></td><td><a href="/majors/edit/KT" class="btn btn-sm btn-outline-primary"><i class="fas fa-edit"></i></a><button class="btn btn-sm btn-outline-danger" onclick="return confirm('Xóa ngành học này?')"><i class="fas fa-trash"></i></button></td></tr>
+                    <tr><td><span class="badge bg-primary">NN</span></td><td><strong>Ngôn ngữ</strong></td><td>Chuyên ngành về ngôn ngữ và văn hóa</td><td><span class="badge bg-info">12</span></td><td><a href="/majors/edit/NN" class="btn btn-sm btn-outline-primary"><i class="fas fa-edit"></i></a><button class="btn btn-sm btn-outline-danger" onclick="return confirm('Xóa ngành học này?')"><i class="fas fa-trash"></i></button></td></tr>
+                    <tr><td><span class="badge bg-primary">CK</span></td><td><strong>Cơ khí</strong></td><td>Chuyên ngành về cơ khí và chế tạo</td><td><span class="badge bg-info">15</span></td><td><a href="/majors/edit/CK" class="btn btn-sm btn-outline-primary"><i class="fas fa-edit"></i></a><button class="btn btn-sm btn-outline-danger" onclick="return confirm('Xóa ngành học này?')"><i class="fas fa-trash"></i></button></td></tr>
+                    <tr><td><span class="badge bg-primary">XD</span></td><td><strong>Xây dựng</strong></td><td>Chuyên ngành về xây dựng và kiến trúc</td><td><span class="badge bg-info">10</span></td><td><a href="/majors/edit/XD" class="btn btn-sm btn-outline-primary"><i class="fas fa-edit"></i></a><button class="btn btn-sm btn-outline-danger" onclick="return confirm('Xóa ngành học này?')"><i class="fas fa-trash"></i></button></td></tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="alert alert-info mt-3"><i class="fas fa-info-circle me-2"></i>Đang hiển thị dữ liệu mẫu. Vui lòng thêm ngành học thực tế để thay thế.</div>
+        {{/if}}
+    </div>
+</div>

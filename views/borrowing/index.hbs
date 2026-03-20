@@ -1,0 +1,87 @@
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="fas fa-exchange-alt me-2"></i>Quản lý mượn trả sách</h2>
+    <div>
+        <a href="/borrowing/borrow" class="btn btn-success me-2">
+            <i class="fas fa-hand-holding me-2"></i>Mượn sách
+        </a>
+        <a href="/borrowing/return" class="btn btn-primary">
+            <i class="fas fa-undo me-2"></i>Trả sách
+        </a>
+    </div>
+</div>
+
+{{#if query.success}}
+<div class="alert alert-success alert-dismissible fade show" role="alert">
+    <i class="fas fa-check-circle me-2"></i>{{query.success}}
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+</div>
+{{/if}}
+
+{{#if query.error}}
+<div class="alert alert-danger alert-dismissible fade show" role="alert">
+    <i class="fas fa-exclamation-circle me-2"></i>{{query.error}}
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+</div>
+{{/if}}
+
+<div class="card">
+    <div class="card-body">
+        {{#if borrowings.length}}
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th>Mã giao dịch</th>
+                        <th>Mã độc giả</th>
+                        <th>Họ tên</th>
+                        <th>Tên sách</th>
+                        <th>Mã bản sao</th>
+                        <th>Thủ thư</th>
+                        <th>Ngày mượn</th>
+                        <th>Hạn trả</th>
+                        <th>Ngày trả</th>
+                        <th>Trạng thái</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each borrowings}}
+                    <tr>
+                        <td><span class="badge bg-primary">#{{transaction_id}}</span></td>
+                        <td><span class="badge bg-info">{{reader_id}}</span></td>
+                        <td><strong>{{reader_name}}</strong></td>
+                        <td>{{title_name}}</td>
+                        <td><span class="badge bg-secondary">{{copy_id}}</span></td>
+                        <td>{{librarian_name}}</td>
+                        <td>{{formatDate borrow_date}}</td>
+                        <td>{{formatDate due_date}}</td>
+                        <td>{{#if return_date}}{{formatDate return_date}}{{else}}-{{/if}}</td>
+                        <td>
+                            {{#if (eq status 'borrowed')}}<span class="badge bg-warning">Đang mượn</span>
+                            {{else if (eq status 'returned')}}<span class="badge bg-success">Đã trả</span>
+                            {{else if (eq status 'overdue')}}<span class="badge bg-danger">Quá hạn</span>{{/if}}
+                        </td>
+                    </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+        </div>
+        {{else}}
+        <!-- Mock Data for Demo -->
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead class="table-light">
+                    <tr><th>Mã giao dịch</th><th>Mã độc giả</th><th>Họ tên</th><th>Tên sách</th><th>Mã bản sao</th><th>Thủ thư</th><th>Ngày mượn</th><th>Hạn trả</th><th>Ngày trả</th><th>Trạng thái</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><span class="badge bg-primary">#1</span></td><td><span class="badge bg-info">SV2024001</span></td><td><strong>Nguyễn Văn A</strong></td><td>Giáo trình C++</td><td><span class="badge bg-secondary">COPY00101</span></td><td>lâm gia thịnh</td><td>15/03/2024</td><td>22/03/2024</td><td>-</td><td><span class="badge bg-warning">Đang mượn</span></td></tr>
+                    <tr><td><span class="badge bg-primary">#2</span></td><td><span class="badge bg-info">SV2024002</span></td><td><strong>Trần Thị B</strong></td><td>Cơ sở dữ liệu</td><td><span class="badge bg-secondary">COPY00201</span></td><td>lâm gia thịnh</td><td>10/03/2024</td><td>17/03/2024</td><td>16/03/2024</td><td><span class="badge bg-success">Đã trả</span></td></tr>
+                    <tr><td><span class="badge bg-primary">#3</span></td><td><span class="badge bg-info">SV2024003</span></td><td><strong>Lê Văn C</strong></td><td>Kinh tế vi mô</td><td><span class="badge bg-secondary">COPY00301</span></td><td>lâm gia thịnh</td><td>01/03/2024</td><td>08/03/2024</td><td>-</td><td><span class="badge bg-danger">Quá hạn</span></td></tr>
+                    <tr><td><span class="badge bg-primary">#4</span></td><td><span class="badge bg-info">SV2024004</span></td><td><strong>Phạm Thị D</strong></td><td>Tiếng Anh chuyên ngành</td><td><span class="badge bg-secondary">COPY00401</span></td><td>lâm gia thịnh</td><td>05/03/2024</td><td>12/03/2024</td><td>11/03/2024</td><td><span class="badge bg-success">Đã trả</span></td></tr>
+                    <tr><td><span class="badge bg-primary">#5</span></td><td><span class="badge bg-info">SV2024005</span></td><td><strong>Hoàng Văn E</strong></td><td>Cơ học kỹ thuật</td><td><span class="badge bg-secondary">COPY00501</span></td><td>lâm gia thịnh</td><td>12/03/2024</td><td>19/03/2024</td><td>-</td><td><span class="badge bg-warning">Đang mượn</span></td></tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="alert alert-info mt-3"><i class="fas fa-info-circle me-2"></i>Đang hiển thị dữ liệu mẫu. Vui lòng thêm giao dịch thực tế để thay thế.</div>
+        {{/if}}
+    </div>
+</div>

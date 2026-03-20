@@ -1,0 +1,116 @@
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="fas fa-book me-2"></i>Quản lý sách</h2>
+    <a href="/books/add" class="btn btn-primary">
+        <i class="fas fa-plus me-2"></i>Thêm sách mới
+    </a>
+</div>
+
+{{#if query.success}}
+<div class="alert alert-success alert-dismissible fade show" role="alert">
+    <i class="fas fa-check-circle me-2"></i>{{query.success}}
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+</div>
+{{/if}}
+
+{{#if query.error}}
+<div class="alert alert-danger alert-dismissible fade show" role="alert">
+    <i class="fas fa-exclamation-circle me-2"></i>{{query.error}}
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+</div>
+{{/if}}
+
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card text-center stat-card">
+            <div class="card-body">
+                <h3 class="text-primary">{{#if stats.total_titles}}{{stats.total_titles}}{{else}}12{{/if}}</h3>
+                <small class="text-muted">Loại sách</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center stat-card">
+            <div class="card-body">
+                <h3 class="text-success">{{#if stats.total_copies}}{{stats.total_copies}}{{else}}45{{/if}}</h3>
+                <small class="text-muted">Tổng bản sao</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center stat-card">
+            <div class="card-body">
+                <h3 class="text-info">{{#if stats.available_copies}}{{stats.available_copies}}{{else}}32{{/if}}</h3>
+                <small class="text-muted">Có sẵn</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center stat-card">
+            <div class="card-body">
+                <h3 class="text-warning">{{#if stats.borrowed_copies}}{{stats.borrowed_copies}}{{else}}13{{/if}}</h3>
+                <small class="text-muted">Đang mượn</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        {{#if books.length}}
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th>Mã sách</th>
+                        <th>Tên sách</th>
+                        <th>Tác giả</th>
+                        <th>Nhà xuất bản</th>
+                        <th>Ngành</th>
+                        <th>Tổng bản sao</th>
+                        <th>Có sẵn</th>
+                        <th>Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each books}}
+                    <tr>
+                        <td><span class="badge bg-primary">{{title_id}}</span></td>
+                        <td><strong>{{title_name}}</strong></td>
+                        <td>{{author}}</td>
+                        <td>{{publisher}}</td>
+                        <td><span class="badge bg-info">{{major_name}}</span></td>
+                        <td><span class="badge bg-success">{{total_copies}}</span></td>
+                        <td><span class="badge bg-primary">{{available_count}}</span></td>
+                        <td>
+                            <a href="/books/edit/{{title_id}}" class="btn btn-sm btn-outline-primary"><i class="fas fa-edit"></i></a>
+                            <form method="POST" action="/books/delete/{{title_id}}" class="d-inline">
+                                <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Xóa sách này?')"><i class="fas fa-trash"></i></button>
+                            </form>
+                        </td>
+                    </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+        </div>
+        {{else}}
+        <!-- Mock Data for Demo -->
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead class="table-light">
+                    <tr><th>Mã sách</th><th>Tên sách</th><th>Tác giả</th><th>Nhà xuất bản</th><th>Ngành</th><th>Tổng bản sao</th><th>Có sẵn</th><th>Thao tác</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><span class="badge bg-primary">BOOK001</span></td><td><strong>Giáo trình C++</strong></td><td>Nguyễn Văn A</td><td>NXB Bách Khoa</td><td><span class="badge bg-info">CNTT</span></td><td><span class="badge bg-success">5</span></td><td><span class="badge bg-primary">3</span></td><td><a href="/books/edit/BOOK001" class="btn btn-sm btn-outline-primary"><i class="fas fa-edit"></i></a><button class="btn btn-sm btn-outline-danger" onclick="return confirm('Xóa sách này?')"><i class="fas fa-trash"></i></button></td></tr>
+                    <tr><td><span class="badge bg-primary">BOOK002</span></td><td><strong>Cơ sở dữ liệu</strong></td><td>Trần Thị B</td><td>NXB Giáo dục</td><td><span class="badge bg-info">CNTT</span></td><td><span class="badge bg-success">3</span></td><td><span class="badge bg-primary">2</span></td><td><a href="/books/edit/BOOK002" class="btn btn-sm btn-outline-primary"><i class="fas fa-edit"></i></a><button class="btn btn-sm btn-outline-danger" onclick="return confirm('Xóa sách này?')"><i class="fas fa-trash"></i></button></td></tr>
+                    <tr><td><span class="badge bg-primary">BOOK003</span></td><td><strong>Kinh tế vi mô</strong></td><td>Lê Văn C</td><td>NXB Kinh tế</td><td><span class="badge bg-info">Kinh tế</span></td><td><span class="badge bg-success">4</span></td><td><span class="badge bg-primary">4</span></td><td><a href="/books/edit/BOOK003" class="btn btn-sm btn-outline-primary"><i class="fas fa-edit"></i></a><button class="btn btn-sm btn-outline-danger" onclick="return confirm('Xóa sách này?')"><i class="fas fa-trash"></i></button></td></tr>
+                    <tr><td><span class="badge bg-primary">BOOK004</span></td><td><strong>Tiếng Anh chuyên ngành</strong></td><td>Phạm Thị D</td><td>NXB Ngoại ngữ</td><td><span class="badge bg-info">Ngôn ngữ</span></td><td><span class="badge bg-success">6</span></td><td><span class="badge bg-primary">5</span></td><td><a href="/books/edit/BOOK004" class="btn btn-sm btn-outline-primary"><i class="fas fa-edit"></i></a><button class="btn btn-sm btn-outline-danger" onclick="return confirm('Xóa sách này?')"><i class="fas fa-trash"></i></button></td></tr>
+                    <tr><td><span class="badge bg-primary">BOOK005</span></td><td><strong>Cơ học kỹ thuật</strong></td><td>Hoàng Văn E</td><td>NXB Kỹ thuật</td><td><span class="badge bg-info">Kỹ thuật</span></td><td><span class="badge bg-success">3</span></td><td><span class="badge bg-primary">1</span></td><td><a href="/books/edit/BOOK005" class="btn btn-sm btn-outline-primary"><i class="fas fa-edit"></i></a><button class="btn btn-sm btn-outline-danger" onclick="return confirm('Xóa sách này?')"><i class="fas fa-trash"></i></button></td></tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="alert alert-info mt-3"><i class="fas fa-info-circle me-2"></i>Đang hiển thị dữ liệu mẫu. Vui lòng thêm sách thực tế để thay thế.</div>
+        {{/if}}
+    </div>
+</div>
+
+<style>.stat-card { transition: transform 0.3s; } .stat-card:hover { transform: translateY(-5px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }</style>

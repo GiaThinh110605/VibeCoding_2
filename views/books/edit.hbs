@@ -1,0 +1,123 @@
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="fas fa-book me-2"></i>Chỉnh sửa sách</h2>
+    <a href="/books" class="btn btn-secondary">
+        <i class="fas fa-arrow-left me-2"></i>Quay lại
+    </a>
+</div>
+
+{{#if query.success}}
+<div class="alert alert-success alert-dismissible fade show" role="alert">
+    <i class="fas fa-check-circle me-2"></i>{{query.success}}
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+</div>
+{{/if}}
+
+{{#if query.error}}
+<div class="alert alert-danger alert-dismissible fade show" role="alert">
+    <i class="fas fa-exclamation-circle me-2"></i>{{query.error}}
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+</div>
+{{/if}}
+
+<div class="card">
+    <div class="card-body">
+        <form method="POST" action="/books/edit/{{book.title_id}}">
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="title_id" class="form-label">Mã sách</label>
+                    <input type="text" class="form-control" id="title_id" name="title_id" 
+                           value="{{book.title_id}}" readonly>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="title_name" class="form-label">Tên sách *</label>
+                    <input type="text" class="form-control" id="title_name" name="title_name" 
+                           value="{{book.title_name}}" required>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="author" class="form-label">Tác giả *</label>
+                    <input type="text" class="form-control" id="author" name="author" 
+                           value="{{book.author}}" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="publisher" class="form-label">Nhà xuất bản *</label>
+                    <input type="text" class="form-control" id="publisher" name="publisher" 
+                           value="{{book.publisher}}" required>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="major_id" class="form-label">Ngành *</label>
+                    <select class="form-select" id="major_id" name="major_id" required>
+                        <option value="">-- Chọn ngành --</option>
+                        {{#if majors.length}}
+                        {{#each majors}}
+                        <option value="{{major_id}}" {{#if (eq major_id ../book.major_id)}}selected{{/if}}>{{major_name}}</option>
+                        {{/each}}
+                        {{else}}
+                        <option value="CNTT" {{#if (eq book.major_id 'CNTT')}}selected{{/if}}>Công nghệ thông tin</option>
+                        <option value="KT" {{#if (eq book.major_id 'KT')}}selected{{/if}}>Kinh tế</option>
+                        <option value="NN" {{#if (eq book.major_id 'NN')}}selected{{/if}}>Ngôn ngữ</option>
+                        <option value="CK" {{#if (eq book.major_id 'CK')}}selected{{/if}}>Cơ khí</option>
+                        <option value="XD" {{#if (eq book.major_id 'XD')}}selected{{/if}}>Xây dựng</option>
+                        {{/if}}
+                    </select>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="description" class="form-label">Mô tả</label>
+                    <textarea class="form-control" id="description" name="description" rows="3">{{book.description}}</textarea>
+                </div>
+            </div>
+            
+            <div class="d-flex justify-content-end gap-2">
+                <a href="/books" class="btn btn-secondary">Hủy</a>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save me-2"></i>Cập nhật sách
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="card mt-4">
+    <div class="card-header">
+        <h5 class="mb-0"><i class="fas fa-info-circle me-2"></i>Thông tin bản sao</h5>
+    </div>
+    <div class="card-body">
+        {{#if copies.length}}
+        <div class="table-responsive">
+            <table class="table table-sm">
+                <thead>
+                    <tr>
+                        <th>Mã bản sao</th>
+                        <th>Trạng thái</th>
+                        <th>Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each copies}}
+                    <tr>
+                        <td><span class="badge bg-secondary">{{copy_id}}</span></td>
+                        <td>
+                            {{#if (eq status 'available')}}<span class="badge bg-success">Có sẵn</span>{{/if}}
+                            {{#if (eq status 'borrowed')}}<span class="badge bg-warning">Đang mượn</span>{{/if}}
+                            {{#if (eq status 'damaged')}}<span class="badge bg-danger">Hỏng</span>{{/if}}
+                        </td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-info" onclick="window.location.href='/books/copy/edit/{{copy_id}}'">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+        </div>
+        {{else}}
+        <p class="text-muted">Chưa có bản sao nào cho sách này.</p>
+        {{/if}}
+    </div>
+</div>

@@ -1,0 +1,138 @@
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="fas fa-chart-bar me-2"></i>Báo cáo thống kê</h2>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="fas fa-book me-2"></i>Top 10 sách mượn nhiều nhất</h5>
+            </div>
+            <div class="card-body">
+                {{#if mostBorrowed.length}}
+                <div class="table-responsive">
+                    <table class="table table-sm">
+                        <thead><tr><th>Tên sách</th><th>Tác giả</th><th>Ngành</th><th>Số lần mượn</th></tr></thead>
+                        <tbody>
+                            {{#each mostBorrowed}}
+                            <tr><td><strong>{{title_name}}</strong></td><td>{{author}}</td><td><span class="badge bg-info">{{major_name}}</span></td><td><span class="badge bg-primary">{{borrow_count}}</span></td></tr>
+                            {{/each}}
+                        </tbody>
+                    </table>
+                </div>
+                {{else}}
+                <div class="table-responsive">
+                    <table class="table table-sm">
+                        <thead><tr><th>Tên sách</th><th>Tác giả</th><th>Ngành</th><th>Số lần mượn</th></tr></thead>
+                        <tbody>
+                            <tr><td><strong>Giáo trình C++</strong></td><td>Nguyễn Văn A</td><td><span class="badge bg-info">CNTT</span></td><td><span class="badge bg-primary">15</span></td></tr>
+                            <tr><td><strong>Cơ sở dữ liệu</strong></td><td>Trần Thị B</td><td><span class="badge bg-info">CNTT</span></td><td><span class="badge bg-primary">12</span></td></tr>
+                            <tr><td><strong>Kinh tế vi mô</strong></td><td>Lê Văn C</td><td><span class="badge bg-info">Kinh tế</span></td><td><span class="badge bg-primary">10</span></td></tr>
+                            <tr><td><strong>Tiếng Anh chuyên ngành</strong></td><td>Phạm Thị D</td><td><span class="badge bg-info">Ngôn ngữ</span></td><td><span class="badge bg-primary">8</span></td></tr>
+                            <tr><td><strong>Cơ học kỹ thuật</strong></td><td>Hoàng Văn E</td><td><span class="badge bg-info">Kỹ thuật</span></td><td><span class="badge bg-primary">6</span></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                {{/if}}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0"><i class="fas fa-users me-2"></i>Top 10 độc giả tích cực nhất</h5>
+            </div>
+            <div class="card-body">
+                {{#if mostActiveReaders.length}}
+                <div class="table-responsive">
+                    <table class="table table-sm">
+                        <thead><tr><th>Mã độc giả</th><th>Họ tên</th><th>Lớp</th><th>Số lần mượn</th></tr></thead>
+                        <tbody>
+                            {{#each mostActiveReaders}}
+                            <tr><td><span class="badge bg-info">{{reader_id}}</span></td><td><strong>{{full_name}}</strong></td><td>{{class}}</td><td><span class="badge bg-success">{{borrow_count}}</span></td></tr>
+                            {{/each}}
+                        </tbody>
+                    </table>
+                </div>
+                {{else}}
+                <div class="table-responsive">
+                    <table class="table table-sm">
+                        <thead><tr><th>Mã độc giả</th><th>Họ tên</th><th>Lớp</th><th>Số lần mượn</th></tr></thead>
+                        <tbody>
+                            <tr><td><span class="badge bg-info">SV2024001</span></td><td><strong>Nguyễn Văn A</strong></td><td>CNTT-K64</td><td><span class="badge bg-success">8</span></td></tr>
+                            <tr><td><span class="badge bg-info">SV2024002</span></td><td><strong>Trần Thị B</strong></td><td>Kinh tế-K64</td><td><span class="badge bg-success">7</span></td></tr>
+                            <tr><td><span class="badge bg-info">SV2024003</span></td><td><strong>Lê Văn C</strong></td><td>Cơ khí-K63</td><td><span class="badge bg-success">6</span></td></tr>
+                            <tr><td><span class="badge bg-info">SV2024004</span></td><td><strong>Phạm Thị D</strong></td><td>QTKD-K65</td><td><span class="badge bg-success">5</span></td></tr>
+                            <tr><td><span class="badge bg-info">SV2024005</span></td><td><strong>Hoàng Văn E</strong></td><td>CNTT-K64</td><td><span class="badge bg-success">4</span></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                {{/if}}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header bg-warning text-white">
+                <h5 class="mb-0"><i class="fas fa-exclamation-triangle me-2"></i>Sách quá hạn trả</h5>
+            </div>
+            <div class="card-body">
+                {{#if overdueBooks.length}}
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead><tr><th>Mã độc giả</th><th>Họ tên</th><th>SĐT</th><th>Tên sách</th><th>Mã bản sao</th><th>Hạn trả</th><th>Số ngày quá hạn</th></tr></thead>
+                        <tbody>
+                            {{#each overdueBooks}}
+                            <tr class="table-danger"><td><span class="badge bg-danger">{{reader_id}}</span></td><td><strong>{{reader_name}}</strong></td><td>{{phone}}</td><td>{{title_name}}</td><td><span class="badge bg-secondary">{{copy_id}}</span></td><td>{{formatDate due_date}}</td><td><span class="badge bg-warning">{{overdue_days}} ngày</span></td></tr>
+                            {{/each}}
+                        </tbody>
+                    </table>
+                </div>
+                {{else}}
+                <div class="alert alert-success"><i class="fas fa-check-circle me-2"></i>Không có sách quá hạn nào!</div>
+                {{/if}}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0"><i class="fas fa-chart-line me-2"></i>Xu hướng mượn sách 12 tháng qua</h5>
+            </div>
+            <div class="card-body">
+                {{#if monthlyTrends.length}}
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead><tr><th>Tháng</th><th>Số lần mượn</th></tr></thead>
+                        <tbody>
+                            {{#each monthlyTrends}}
+                            <tr><td><span class="badge bg-info">{{month}}</span></td><td><span class="badge bg-primary">{{borrow_count}}</span></td></tr>
+                            {{/each}}
+                        </tbody>
+                    </table>
+                </div>
+                {{else}}
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead><tr><th>Tháng</th><th>Số lần mượn</th></tr></thead>
+                        <tbody>
+                            <tr><td><span class="badge bg-info">2024-03</span></td><td><span class="badge bg-primary">45</span></td></tr>
+                            <tr><td><span class="badge bg-info">2024-02</span></td><td><span class="badge bg-primary">38</span></td></tr>
+                            <tr><td><span class="badge bg-info">2024-01</span></td><td><span class="badge bg-primary">42</span></td></tr>
+                            <tr><td><span class="badge bg-info">2023-12</span></td><td><span class="badge bg-primary">35</span></td></tr>
+                            <tr><td><span class="badge bg-info">2023-11</span></td><td><span class="badge bg-primary">40</span></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                {{/if}}
+            </div>
+        </div>
+    </div>
+</div>

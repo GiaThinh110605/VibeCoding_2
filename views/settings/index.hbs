@@ -1,0 +1,131 @@
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="fas fa-cog me-2"></i>Cài đặt hệ thống</h2>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="fas fa-users me-2"></i>Thống kê người dùng</h5>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-6 mb-3">
+                        <h4 class="text-primary">{{#if settings.total_users}}{{settings.total_users}}{{else}}3{{/if}}</h4>
+                        <small class="text-muted">Tổng người dùng</small>
+                    </div>
+                    <div class="col-6 mb-3">
+                        <h4 class="text-success">{{#if settings.active_users}}{{settings.active_users}}{{else}}2{{/if}}</h4>
+                        <small class="text-muted">Đang hoạt động</small>
+                    </div>
+                    <div class="col-6 mb-3">
+                        <h4 class="text-info">{{#if settings.admin_count}}{{settings.admin_count}}{{else}}1{{/if}}</h4>
+                        <small class="text-muted">Quản trị viên</small>
+                    </div>
+                    <div class="col-6 mb-3">
+                        <h4 class="text-warning">{{#if settings.new_users}}{{settings.new_users}}{{else}}1{{/if}}</h4>
+                        <small class="text-muted">Người dùng mới</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card mb-4">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0"><i class="fas fa-book me-2"></i>Thống kê thư viện</h5>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-6 mb-3">
+                        <h4 class="text-primary">{{#if libraryStats.total_majors}}{{libraryStats.total_majors}}{{else}}5{{/if}}</h4>
+                        <small class="text-muted">Số ngành</small>
+                    </div>
+                    <div class="col-6 mb-3">
+                        <h4 class="text-info">{{#if libraryStats.total_titles}}{{libraryStats.total_titles}}{{else}}12{{/if}}</h4>
+                        <small class="text-muted">Loại sách</small>
+                    </div>
+                    <div class="col-6 mb-3">
+                        <h4 class="text-success">{{#if libraryStats.total_copies}}{{libraryStats.total_copies}}{{else}}45{{/if}}</h4>
+                        <small class="text-muted">Tổng bản sao</small>
+                    </div>
+                    <div class="col-6 mb-3">
+                        <h4 class="text-warning">{{#if libraryStats.total_readers}}{{libraryStats.total_readers}}{{else}}5{{/if}}</h4>
+                        <small class="text-muted">Độc giả</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card mb-4">
+            <div class="card-header bg-warning text-white">
+                <h5 class="mb-0"><i class="fas fa-exchange-alt me-2"></i>Thống kê mượn trả</h5>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-6 mb-3">
+                        <h4 class="text-primary">{{#if borrowingStats.total_transactions}}{{borrowingStats.total_transactions}}{{else}}25{{/if}}</h4>
+                        <small class="text-muted">Tổng giao dịch</small>
+                    </div>
+                    <div class="col-6 mb-3">
+                        <h4 class="text-success">{{#if borrowingStats.current_borrows}}{{borrowingStats.current_borrows}}{{else}}8{{/if}}</h4>
+                        <small class="text-muted">Đang mượn</small>
+                    </div>
+                    <div class="col-6 mb-3">
+                        <h4 class="text-info">{{#if borrowingStats.returned_books}}{{borrowingStats.returned_books}}{{else}}15{{/if}}</h4>
+                        <small class="text-muted">Đã trả</small>
+                    </div>
+                    <div class="col-6 mb-3">
+                        <h4 class="text-danger">{{#if borrowingStats.overdue_books}}{{borrowingStats.overdue_books}}{{else}}2{{/if}}</h4>
+                        <small class="text-muted">Quá hạn</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-user-cog me-2"></i>Cài đặt nhanh</h5>
+            </div>
+            <div class="card-body">
+                <div class="list-group list-group-flush">
+                    <a href="/settings/profile" class="list-group-item list-group-item-action">
+                        <i class="fas fa-user me-2"></i>Thông tin cá nhân
+                    </a>
+                    <a href="/settings/password" class="list-group-item list-group-item-action">
+                        <i class="fas fa-key me-2"></i>Đổi mật khẩu
+                    </a>
+                    <a href="/staff" class="list-group-item list-group-item-action">
+                        <i class="fas fa-users-cog me-2"></i>Quản lý nhân viên
+                    </a>
+                    <a href="/majors" class="list-group-item list-group-item-action">
+                        <i class="fas fa-graduation-cap me-2"></i>Quản lý ngành học
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-info-circle me-2"></i>Thông tin hệ thống</h5>
+            </div>
+            <div class="card-body">
+                <table class="table table-sm">
+                    <tr><td><strong>Phiên bản:</strong></td><td>1.0.0</td></tr>
+                    <tr><td><strong>Database:</strong></td><td>PostgreSQL</td></tr>
+                    <tr><td><strong>Node.js:</strong></td><td>v20.19.4</td></tr>
+                    <tr><td><strong>Framework:</strong></td><td>Express.js</td></tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

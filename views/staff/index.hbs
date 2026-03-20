@@ -1,356 +1,192 @@
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{title}} - Hệ thống Quản lý Thư viện</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        .sidebar {
-            min-height: 100vh;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-        }
-        .sidebar .nav-link {
-            color: rgba(255, 255, 255, 0.8);
-            padding: 12px 20px;
-            margin: 5px 0;
-            border-radius: 8px;
-            transition: all 0.3s;
-        }
-        .sidebar .nav-link:hover,
-        .sidebar .nav-link.active {
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-        }
-        .main-content {
-            background-color: #f8f9fa;
-            min-height: 100vh;
-        }
-        .stat-card {
-            background: white;
-            border-radius: 15px;
-            padding: 25px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-            transition: transform 0.3s;
-        }
-        .stat-card:hover {
-            transform: translateY(-5px);
-        }
-        .stat-icon {
-            width: 60px;
-            height: 60px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            margin-bottom: 15px;
-        }
-        .user-profile {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            padding: 15px;
-            margin-top: auto;
-        }
-        .table-actions {
-            display: flex;
-            gap: 8px;
-        }
-        .btn-action {
-            padding: 5px 10px;
-            border-radius: 5px;
-            border: none;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        .btn-edit {
-            background-color: #ffc107;
-            color: white;
-        }
-        .btn-delete {
-            background-color: #dc3545;
-            color: white;
-        }
-        .btn-action:hover {
-            opacity: 0.8;
-        }
-        .status-badge {
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-        }
-        .status-active {
-            background-color: #d4edda;
-            color: #155724;
-        }
-        .status-inactive {
-            background-color: #f8d7da;
-            color: #721c24;
-        }
-    </style>
-</head>
-<body>
-    <div class="container-fluid">
-        <div class="row">
-            <!-- Sidebar -->
-            <nav class="col-md-3 col-lg-2 d-md-block sidebar collapse">
-                <div class="position-sticky pt-3">
-                    <div class="text-center mb-4">
-                        <i class="fas fa-book-open fa-3x mb-2"></i>
-                        <h5>Thư viện Uni</h5>
-                    </div>
-                    
-                    <ul class="nav flex-column">
-                        <li class="nav-item">
-                            <a class="nav-link" href="/dashboard">
-                                <i class="fas fa-tachometer-alt me-2"></i> Bảng điều khiển
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/books">
-                                <i class="fas fa-book me-2"></i> Quản lý sách
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link active" href="/staff">
-                                <i class="fas fa-users me-2"></i> Quản lý nhân viên
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/readers">
-                                <i class="fas fa-id-card me-2"></i> Quản lý bạn đọc
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/reports">
-                                <i class="fas fa-chart-bar me-2"></i> Báo cáo
-                            </a>
-                        </li>
-                    </ul>
-                    
-                    <div class="user-profile">
-                        <div class="d-flex align-items-center">
-                            <i class="fas fa-user-circle fa-2x me-3"></i>
-                            <div>
-                                <div class="fw-bold">QT {{user.full_name}}</div>
-                                <small>Quản trị viên</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </nav>
-
-            <!-- Main content -->
-            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 main-content">
-                <!-- Header -->
-                <div class="d-flex justify-content-between align-items-center py-3">
-                    <div class="flex-grow-1">
-                        <div class="input-group" style="max-width: 400px;">
-                            <span class="input-group-text"><i class="fas fa-search"></i></span>
-                            <input type="text" class="form-control" placeholder="Tìm kiếm nhân viên..." id="searchInput">
-                        </div>
-                    </div>
-                    <div class="d-flex align-items-center gap-3">
-                        <button class="btn btn-light position-relative">
-                            <i class="fas fa-bell"></i>
-                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">3</span>
-                        </button>
-                        <button class="btn btn-light">
-                            <i class="fas fa-cog"></i>
-                        </button>
-                        <div class="dropdown">
-                            <button class="btn btn-light dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                                <i class="fas fa-user-circle"></i>
-                            </button>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="#">Hồ sơ</a></li>
-                                <li><a class="dropdown-item" href="/logout">Đăng xuất</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Page Title -->
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <div>
-                        <h2>Quản lý nhân viên</h2>
-                        <p class="text-muted">Theo dõi và quản lý thông tin nhân sự thư viện toàn hệ thống.</p>
-                    </div>
-                    <a href="/staff/add" class="btn btn-primary">
-                        <i class="fas fa-user-plus me-2"></i> Thêm nhân viên mới
-                    </a>
-                </div>
-
-                <!-- Statistics Cards -->
-                <div class="row mb-4">
-                    <div class="col-md-4 mb-3">
-                        <div class="stat-card">
-                            <div class="stat-icon bg-primary bg-opacity-10 text-primary">
-                                <i class="fas fa-users"></i>
-                            </div>
-                            <h3 class="mb-1">{{stats.total_staff}}</h3>
-                            <p class="text-muted mb-1">Tổng số nhân viên</p>
-                            <small class="text-success"><i class="fas fa-arrow-up"></i> +0% so với tháng trước</small>
-                        </div>
-                    </div>
-                    <div class="col-md-4 mb-3">
-                        <div class="stat-card">
-                            <div class="stat-icon bg-success bg-opacity-10 text-success">
-                                <i class="fas fa-user-check"></i>
-                            </div>
-                            <h3 class="mb-1">{{stats.active_staff}}</h3>
-                            <p class="text-muted mb-1">Đang hoạt động</p>
-                            <small class="text-success"><i class="fas fa-minus"></i> +0% ổn định</small>
-                        </div>
-                    </div>
-                    <div class="col-md-4 mb-3">
-                        <div class="stat-card">
-                            <div class="stat-icon bg-info bg-opacity-10 text-info">
-                                <i class="fas fa-user-plus"></i>
-                            </div>
-                            <h3 class="mb-1">{{stats.new_accounts}}</h3>
-                            <p class="text-muted mb-1">Tài khoản mới</p>
-                            <small class="text-info"><i class="fas fa-arrow-up"></i> +100% tăng mới</small>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Filter and Actions -->
-                <div class="bg-white rounded p-3 mb-3 shadow-sm">
-                    <div class="row align-items-center">
-                        <div class="col-md-8">
-                            <div class="btn-group" role="group">
-                                <button class="btn btn-outline-primary active" onclick="filterByRole('all')">
-                                    Tất cả vai trò
-                                </button>
-                                <button class="btn btn-outline-primary" onclick="filterByRole('librarian')">
-                                    Thủ thư
-                                </button>
-                                <button class="btn btn-outline-primary" onclick="filterByRole('admin')">
-                                    Quản trị viên
-                                </button>
-                            </div>
-                        </div>
-                        <div class="col-md-4 text-end">
-                            <button class="btn btn-outline-success">
-                                <i class="fas fa-download me-2"></i> Xuất báo cáo
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Staff Table -->
-                <div class="bg-white rounded shadow-sm">
-                    <div class="table-responsive">
-                        <table class="table table-hover mb-0">
-                            <thead class="table-light">
-                                <tr>
-                                    <th>MÃ NV</th>
-                                    <th>HỌ TÊN</th>
-                                    <th>VAI TRÒ</th>
-                                    <th>LIÊN HỆ</th>
-                                    <th>TRẠNG THÁI</th>
-                                    <th>HÀNH ĐỘNG</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {{#each staff}}
-                                <tr data-role="{{role}}">
-                                    <td><strong>{{user_id}}</strong></td>
-                                    <td>{{full_name}}</td>
-                                    <td>
-                                        {{#if (eq role 'admin')}}
-                                            <span class="badge bg-danger">Quản trị viên</span>
-                                        {{else}}
-                                            <span class="badge bg-primary">Thủ thư</span>
-                                        {{/if}}
-                                    </td>
-                                    <td>
-                                        <div>{{email}}</div>
-                                        <small class="text-muted">{{phone}}</small>
-                                    </td>
-                                    <td>
-                                        {{#if (eq status 'active')}}
-                                            <span class="status-badge status-active">Đang làm việc</span>
-                                        {{else}}
-                                            <span class="status-badge status-inactive">Nghỉ phép</span>
-                                        {{/if}}
-                                    </td>
-                                    <td>
-                                        <div class="table-actions">
-                                            <a href="/staff/edit/{{user_id}}" class="btn-action btn-edit">
-                                                <i class="fas fa-edit"></i>
-                                            </a>
-                                            <form action="/staff/delete/{{user_id}}" method="POST" style="display: inline;">
-                                                <button type="submit" class="btn-action btn-delete" onclick="return confirm('Bạn có chắc chắn muốn xóa nhân viên này?')">
-                                                    <i class="fas fa-trash"></i>
-                                                </button>
-                                            </form>
-                                        </div>
-                                    </td>
-                                </tr>
-                                {{/each}}
-                            </tbody>
-                        </table>
-                    </div>
-                    
-                    <!-- Pagination -->
-                    <div class="d-flex justify-content-between align-items-center p-3">
-                        <span class="text-muted">Hiển thị 1-{{staff.length}} trên tổng số {{stats.total_staff}} nhân viên</span>
-                        <nav>
-                            <ul class="pagination mb-0">
-                                <li class="page-item disabled">
-                                    <a class="page-link" href="#" tabindex="-1">Previous</a>
-                                </li>
-                                <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                <li class="page-item">
-                                    <a class="page-link" href="#">Next</a>
-                                </li>
-                            </ul>
-                        </nav>
-                    </div>
-                </div>
-            </main>
+<!-- Header -->
+<div class="d-flex justify-content-between align-items-center py-3">
+    <div class="flex-grow-1">
+        <div class="input-group" style="max-width: 400px;">
+            <span class="input-group-text"><i class="fas fa-search"></i></span>
+            <input type="text" class="form-control" placeholder="Tìm kiếm nhân viên..." id="searchInput">
         </div>
     </div>
+    <div class="d-flex align-items-center gap-3">
+        <button class="btn btn-light position-relative">
+            <i class="fas fa-bell"></i>
+            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">3</span>
+        </button>
+        <button class="btn btn-light">
+            <i class="fas fa-cog"></i>
+        </button>
+        <div class="dropdown">
+            <button class="btn btn-light dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                <i class="fas fa-user-circle"></i>
+            </button>
+            <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="#">Hồ sơ</a></li>
+                <li><a class="dropdown-item" href="/logout">Đăng xuất</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-        // Search functionality
-        document.getElementById('searchInput').addEventListener('keyup', function() {
-            const searchValue = this.value.toLowerCase();
-            const rows = document.querySelectorAll('tbody tr');
-            
-            rows.forEach(row => {
-                const text = row.textContent.toLowerCase();
-                row.style.display = text.includes(searchValue) ? '' : 'none';
-            });
+<!-- Page Title -->
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2>Quản lý nhân viên</h2>
+        <p class="text-muted">Theo dõi và quản lý thông tin nhân sự thư viện toàn hệ thống.</p>
+    </div>
+    <a href="/staff/add" class="btn btn-primary">
+        <i class="fas fa-user-plus me-2"></i> Thêm nhân viên mới
+    </a>
+</div>
+
+<!-- Statistics Cards -->
+<div class="row mb-4">
+    <div class="col-md-4 mb-3">
+        <div class="stat-card">
+            <div class="stat-icon bg-primary bg-opacity-10 text-primary">
+                <i class="fas fa-users"></i>
+            </div>
+            <h3 class="mb-1">{{#if stats.total_staff}}{{stats.total_staff}}{{else}}3{{/if}}</h3>
+            <p class="text-muted mb-1">Tổng số nhân viên</p>
+            <small class="text-success"><i class="fas fa-arrow-up"></i> +0% so với tháng trước</small>
+        </div>
+    </div>
+    <div class="col-md-4 mb-3">
+        <div class="stat-card">
+            <div class="stat-icon bg-success bg-opacity-10 text-success">
+                <i class="fas fa-user-check"></i>
+            </div>
+            <h3 class="mb-1">{{#if stats.active_staff}}{{stats.active_staff}}{{else}}2{{/if}}</h3>
+            <p class="text-muted mb-1">Đang hoạt động</p>
+            <small class="text-success"><i class="fas fa-minus"></i> +0% ổn định</small>
+        </div>
+    </div>
+    <div class="col-md-4 mb-3">
+        <div class="stat-card">
+            <div class="stat-icon bg-info bg-opacity-10 text-info">
+                <i class="fas fa-user-plus"></i>
+            </div>
+            <h3 class="mb-1">{{#if stats.new_accounts}}{{stats.new_accounts}}{{else}}1{{/if}}</h3>
+            <p class="text-muted mb-1">Tài khoản mới</p>
+            <small class="text-info"><i class="fas fa-arrow-up"></i> +100% tăng mới</small>
+        </div>
+    </div>
+</div>
+
+<!-- Filter and Actions -->
+<div class="bg-white rounded p-3 mb-3 shadow-sm">
+    <div class="row align-items-center">
+        <div class="col-md-8">
+            <div class="btn-group" role="group">
+                <button class="btn btn-outline-primary active" onclick="filterByRole('all')">Tất cả vai trò</button>
+                <button class="btn btn-outline-primary" onclick="filterByRole('librarian')">Thủ thư</button>
+                <button class="btn btn-outline-primary" onclick="filterByRole('admin')">Quản trị viên</button>
+            </div>
+        </div>
+        <div class="col-md-4 text-end">
+            <button class="btn btn-outline-success">
+                <i class="fas fa-download me-2"></i> Xuất báo cáo
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Staff Table -->
+<div class="bg-white rounded shadow-sm">
+    <div class="table-responsive">
+        <table class="table table-hover mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>MÃ NV</th>
+                    <th>HỌ TÊN</th>
+                    <th>VAI TRÒ</th>
+                    <th>LIÊN HỆ</th>
+                    <th>TRẠNG THÁI</th>
+                    <th>HÀNH ĐỘNG</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#if staff.length}}
+                {{#each staff}}
+                <tr data-role="{{role}}">
+                    <td><strong>{{user_id}}</strong></td>
+                    <td>{{full_name}}</td>
+                    <td>
+                        {{#if (eq role 'admin')}}<span class="badge bg-danger">Quản trị viên</span>
+                        {{else}}<span class="badge bg-primary">Thủ thư</span>{{/if}}
+                    </td>
+                    <td><div>{{email}}</div><small class="text-muted">{{phone}}</small></td>
+                    <td>
+                        {{#if (eq status 'active')}}<span class="status-badge status-active">Đang làm việc</span>
+                        {{else}}<span class="status-badge status-inactive">Nghỉ phép</span>{{/if}}
+                    </td>
+                    <td>
+                        <div class="table-actions">
+                            <a href="/staff/edit/{{user_id}}" class="btn-action btn-edit"><i class="fas fa-edit"></i></a>
+                            <form action="/staff/delete/{{user_id}}" method="POST" style="display: inline;">
+                                <button type="submit" class="btn-action btn-delete" onclick="return confirm('Bạn có chắc chắn muốn xóa nhân viên này?')"><i class="fas fa-trash"></i></button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                {{/each}}
+                {{else}}
+                <!-- Mock Data -->
+                <tr data-role="admin"><td><strong>US001</strong></td><td>lâm gia thịnh</td><td><span class="badge bg-danger">Quản trị viên</span></td><td><div>admin@library.com</div><small class="text-muted">0912345678</small></td><td><span class="status-badge status-active">Đang làm việc</span></td><td><div class="table-actions"><a href="/staff/edit/US001" class="btn-action btn-edit"><i class="fas fa-edit"></i></a><button class="btn-action btn-delete" onclick="return confirm('Bạn có chắc chắn muốn xóa nhân viên này?')"><i class="fas fa-trash"></i></button></div></td></tr>
+                <tr data-role="librarian"><td><strong>US002</strong></td><td>Nguyễn Văn A</td><td><span class="badge bg-primary">Thủ thư</span></td><td><div>librarian@library.com</div><small class="text-muted">0987654321</small></td><td><span class="status-badge status-active">Đang làm việc</span></td><td><div class="table-actions"><a href="/staff/edit/US002" class="btn-action btn-edit"><i class="fas fa-edit"></i></a><button class="btn-action btn-delete" onclick="return confirm('Bạn có chắc chắn muốn xóa nhân viên này?')"><i class="fas fa-trash"></i></button></div></td></tr>
+                <tr data-role="librarian"><td><strong>US003</strong></td><td>Trần Thị B</td><td><span class="badge bg-primary">Thủ thư</span></td><td><div>librarian2@library.com</div><small class="text-muted">0909123456</small></td><td><span class="status-badge status-inactive">Nghỉ phép</span></td><td><div class="table-actions"><a href="/staff/edit/US003" class="btn-action btn-edit"><i class="fas fa-edit"></i></a><button class="btn-action btn-delete" onclick="return confirm('Bạn có chắc chắn muốn xóa nhân viên này?')"><i class="fas fa-trash"></i></button></div></td></tr>
+                {{/if}}
+            </tbody>
+        </table>
+    </div>
+    
+    <!-- Pagination -->
+    <div class="d-flex justify-content-between align-items-center p-3">
+        <span class="text-muted">Hiển thị 1-{{#if staff}}{{staff.length}}{{else}}3{{/if}} trên tổng số {{#if stats.total_staff}}{{stats.total_staff}}{{else}}3{{/if}} nhân viên</span>
+        <nav>
+            <ul class="pagination mb-0">
+                <li class="page-item disabled"><a class="page-link" href="#" tabindex="-1">Previous</a></li>
+                <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                <li class="page-item"><a class="page-link" href="#">Next</a></li>
+            </ul>
+        </nav>
+    </div>
+</div>
+
+<style>
+    .stat-card { background: white; border-radius: 15px; padding: 25px; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08); transition: transform 0.3s; }
+    .stat-card:hover { transform: translateY(-5px); }
+    .stat-icon { width: 60px; height: 60px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px; margin-bottom: 15px; }
+    .table-actions { display: flex; gap: 8px; }
+    .btn-action { padding: 5px 10px; border-radius: 5px; border: none; cursor: pointer; transition: all 0.3s; }
+    .btn-edit { background-color: #ffc107; color: white; }
+    .btn-delete { background-color: #dc3545; color: white; }
+    .btn-action:hover { opacity: 0.8; }
+    .status-badge { padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+    .status-active { background-color: #d4edda; color: #155724; }
+    .status-inactive { background-color: #f8d7da; color: #721c24; }
+</style>
+
+<script>
+    // Search functionality
+    document.getElementById('searchInput').addEventListener('keyup', function() {
+        const searchValue = this.value.toLowerCase();
+        const rows = document.querySelectorAll('tbody tr');
+        rows.forEach(row => {
+            const text = row.textContent.toLowerCase();
+            row.style.display = text.includes(searchValue) ? '' : 'none';
         });
+    });
 
-        // Filter by role
-        function filterByRole(role) {
-            const rows = document.querySelectorAll('tbody tr');
-            const buttons = document.querySelectorAll('.btn-group .btn');
-            
-            // Update active button
-            buttons.forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
-            
-            rows.forEach(row => {
-                if (role === 'all') {
-                    row.style.display = '';
-                } else {
-                    const rowRole = row.getAttribute('data-role');
-                    row.style.display = rowRole === role ? '' : 'none';
-                }
-            });
-        }
-    </script>
-</body>
-</html>
+    // Filter by role
+    function filterByRole(role) {
+        const rows = document.querySelectorAll('tbody tr');
+        const buttons = document.querySelectorAll('.btn-group .btn');
+        buttons.forEach(btn => btn.classList.remove('active'));
+        event.target.classList.add('active');
+        rows.forEach(row => {
+            if (role === 'all') { row.style.display = ''; } 
+            else { const rowRole = row.getAttribute('data-role'); row.style.display = rowRole === role ? '' : 'none'; }
+        });
+    }
+</script>

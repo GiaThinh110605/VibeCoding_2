@@ -1,0 +1,40 @@
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="fas fa-undo me-2"></i>Trả sách</h2>
+    <a href="/borrowing" class="btn btn-secondary">
+        <i class="fas fa-arrow-left me-2"></i>Quay lại
+    </a>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <form method="POST" action="/borrowing/return">
+            <div class="row">
+                <div class="col-md-12 mb-3">
+                    <label for="copy_id" class="form-label">Mã bản sao sách</label>
+                    <input type="text" class="form-control" id="copy_id" name="copy_id" placeholder="VD: COPY00101" required>
+                </div>
+            </div>
+            <div class="d-flex justify-content-end gap-2">
+                <a href="/borrowing" class="btn btn-secondary">Hủy</a>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-undo me-2"></i>Xác nhận trả sách
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="card mt-4">
+    <div class="card-header">
+        <h5 class="mb-0"><i class="fas fa-info-circle me-2"></i>Hướng dẫn</h5>
+    </div>
+    <div class="card-body">
+        <ol>
+            <li>Nhập mã bản sao sách cần trả</li>
+            <li>Chỉ có thể trả sách đang ở trạng thái "borrowed"</li>
+            <li>Sách sẽ được cập nhật trạng thái thành "available" sau khi trả</li>
+            <li>Giao dịch mượn sẽ được đóng lại</li>
+            <li>Nếu sách trả quá hạn, hệ thống sẽ ghi nhận và có thể áp dụng phạt</li>
+        </ol>
+    </div>
+</div>

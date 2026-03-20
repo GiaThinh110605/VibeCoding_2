@@ -19,7 +19,7 @@ router.post('/register', async (req, res) => {
     const { username, password, full_name, email, phone } = req.body;
 
     // Check if user already exists
-    const [existingUser] = await pool.query(
+    const existingUser = await pool.query(
       'SELECT * FROM users WHERE username = $1',
       [username]
     );
@@ -29,7 +29,7 @@ router.post('/register', async (req, res) => {
     }
 
     // Generate user ID
-    const [lastUser] = await pool.query(
+    const lastUser = await pool.query(
       'SELECT user_id FROM users WHERE user_id LIKE $1 ORDER BY user_id DESC LIMIT 1',
       ['US%']
     );

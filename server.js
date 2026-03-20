@@ -23,10 +23,16 @@ app.use(session({
 // Handlebars setup
 const hbs = create({
   extname: '.hbs',
+  partialsDir: [
+    path.join(__dirname, 'views'),
+  ],
   helpers: {
     eq: (a, b) => a === b,
     formatDate: (date) => {
       return new Date(date).toLocaleDateString('vi-VN');
+    },
+    json: function (obj) {
+      return JSON.stringify(obj);
     }
   }
 });
@@ -44,6 +50,8 @@ app.use('/books', require('./routes/books'));
 app.use('/borrowing', require('./routes/borrowing'));
 app.use('/reports', require('./routes/reports'));
 app.use('/staff', require('./routes/staff'));
+app.use('/majors', require('./routes/majors'));
+app.use('/settings', require('./routes/settings'));
 
 // Home route
 app.get('/', (req, res) => {
