@@ -97,7 +97,7 @@ router.post('/return', requireAuth, async (req, res) => {
     );
 
     if (borrowing.rows.length === 0) {
-      return res.status(400).render('error', { message: 'Không tìm thấy giao dịch mượn sách đang hoạt động' });
+      return res.redirect('/borrowing/return?error=Không tìm thấy giao dịch mượn sách đang hoạt động cho mã bản sao này');
     }
 
     // Update transaction
@@ -115,7 +115,7 @@ router.post('/return', requireAuth, async (req, res) => {
     res.redirect('/borrowing?success=Trả sách thành công');
   } catch (error) {
     console.error('Error processing return:', error);
-    res.status(500).render('error', { message: 'Lỗi khi xử lý trả sách' });
+    res.redirect('/borrowing/return?error=Lỗi khi xử lý trả sách. Vui lòng thử lại.');
   }
 });
 

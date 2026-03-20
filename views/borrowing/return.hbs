@@ -5,6 +5,20 @@
     </a>
 </div>
 
+{{#if query.success}}
+<div class="alert alert-success alert-dismissible fade show" role="alert">
+    <i class="fas fa-check-circle me-2"></i>{{query.success}}
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+</div>
+{{/if}}
+
+{{#if query.error}}
+<div class="alert alert-danger alert-dismissible fade show" role="alert">
+    <i class="fas fa-exclamation-circle me-2"></i>{{query.error}}
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+</div>
+{{/if}}
+
 <div class="card">
     <div class="card-body">
         <form method="POST" action="/borrowing/return">
@@ -38,3 +52,33 @@
         </ol>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.querySelector('form');
+    const copyIdInput = document.getElementById('copy_id');
+    
+    form.addEventListener('submit', function(e) {
+        const copyId = copyIdInput.value.trim();
+        
+        if (!copyId) {
+            e.preventDefault();
+            alert('Vui lòng nhập mã bản sao sách!');
+            return;
+        }
+        
+        // Validate copy_id format
+        if (!/^[A-Z]+\d+$/.test(copyId)) {
+            e.preventDefault();
+            alert('Mã bản sao phải có định dạng hợp lệ (ví dụ: COPY00101)');
+            return;
+        }
+    });
+    
+    // Auto-format copy_id
+    copyIdInput.addEventListener('input', function() {
+        let value = this.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+        this.value = value;
+    });
+});
+</script>
