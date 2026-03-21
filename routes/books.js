@@ -107,7 +107,7 @@ router.get('/add', requireAuth, async (req, res) => {
 // Add new book process
 router.post('/add', requireAuth, async (req, res) => {
   try {
-    const { title_id, title_name, publisher, author, major_id, description, total_copies } = req.body;
+    const { title_id, title_name, publisher, author, major_id, total_copies } = req.body;
     const copyCount = parseInt(total_copies) || 1;
 
     try {
@@ -119,8 +119,8 @@ router.post('/add', requireAuth, async (req, res) => {
 
       // Insert book title with all required fields
       await pool.query(
-        'INSERT INTO book_titles (title_id, title_name, publisher, author, major_id, description, total_copies, available_copies) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)',
-        [title_id, title_name, publisher, author, major_id, description, copyCount, copyCount]
+        'INSERT INTO book_titles (title_id, title_name, publisher, author, major_id, total_copies, available_copies) VALUES ($1, $2, $3, $4, $5, $6, $7)',
+        [title_id, title_name, publisher, author, major_id, copyCount, copyCount]
       );
 
       // Insert book copies

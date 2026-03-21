@@ -40,16 +40,22 @@ router.get('/add', requireAuth, (req, res) => {
 router.post('/add', requireAuth, async (req, res) => {
   try {
     const { major_id, major_name, description } = req.body;
-    
+
+    // Check if major_id already exists
+    const existingMajor = await pool.query('SELECT major_id FROM majors WHERE major_id = $1', [major_id]);
+    if (existingMajor.rows.length > 0) {
+      return res.redirect('/majors/add?error=Mã ngành đã tồn tại. Vui lòng chọn mã khác.');
+    }
+
     await pool.query(
       'INSERT INTO majors (major_id, major_name, description) VALUES ($1, $2, $3)',
       [major_id, major_name, description]
     );
-    
+
     res.redirect('/majors?success=Thêm ngành học thành công');
   } catch (error) {
     console.error('Error adding major:', error);
-    res.status(500).render('error', { message: 'Lỗi khi thêm ngành học' });
+    res.redirect('/majors/add?error=Không thể thêm ngành học. Vui lòng thử lại.');
   }
 });
 
@@ -60,11 +66,11 @@ router.get('/edit/:id', requireAuth, async (req, res) => {
       'SELECT * FROM majors WHERE major_id = $1',
       [req.params.id]
     );
-    
+
     if (major.rows.length === 0) {
-      return res.status(404).render('error', { message: 'Không tìm thấy ngành học' });
+      return res.redirect('/majors?error=Không tìm thấy ngành học');
     }
-    
+
     res.render('majors/edit', {
       title: 'Chỉnh sửa ngành học',
       active: 'majors',
@@ -73,7 +79,7 @@ router.get('/edit/:id', requireAuth, async (req, res) => {
     });
   } catch (error) {
     console.error('Error loading major for edit:', error);
-    res.status(500).render('error', { message: 'Lỗi khi tải thông tin ngành học' });
+    res.redirect('/majors?error=Không thể tải thông tin ngành học');
   }
 });
 
@@ -90,7 +96,7 @@ router.post('/edit/:id', requireAuth, async (req, res) => {
     res.redirect('/majors?success=Cập nhật ngành học thành công');
   } catch (error) {
     console.error('Error updating major:', error);
-    res.status(500).render('error', { message: 'Lỗi khi cập nhật ngành học' });
+    res.redirect(`/majors/edit/${req.params.id}?error=Không thể cập nhật ngành học`);
   }
 });
 
@@ -101,7 +107,7 @@ router.post('/delete/:id', requireAuth, async (req, res) => {
     res.redirect('/majors?success=Xóa ngành học thành công');
   } catch (error) {
     console.error('Error deleting major:', error);
-    res.status(500).render('error', { message: 'Lỗi khi xóa ngành học' });
+    res.redirect('/majors?error=Không thể xóa ngành học');
   }
 });
 

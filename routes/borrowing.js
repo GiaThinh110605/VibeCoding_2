@@ -50,7 +50,13 @@ router.post('/borrow', requireAuth, async (req, res) => {
     );
 
     if (copy.rows.length === 0) {
-      return res.status(400).render('error', { message: 'Sách không có sẵn để mượn' });
+      return res.redirect('/borrowing/borrow?error=Sách không có sẵn để mượn hoặc mã bản sao không đúng');
+    }
+
+    // Check if reader exists
+    const reader = await pool.query('SELECT reader_id FROM readers WHERE reader_id = $1', [reader_id]);
+    if (reader.rows.length === 0) {
+      return res.redirect('/borrowing/borrow?error=Không tìm thấy độc giả với mã này');
     }
 
     // Calculate due date (14 days from now)
@@ -72,7 +78,7 @@ router.post('/borrow', requireAuth, async (req, res) => {
     res.redirect('/borrowing?success=Mượn sách thành công');
   } catch (error) {
     console.error('Error processing borrow:', error);
-    res.status(500).render('error', { message: 'Lỗi khi xử lý mượn sách' });
+    res.redirect('/borrowing/borrow?error=Lỗi khi xử lý mượn sách. Vui lòng thử lại.');
   }
 });
 
