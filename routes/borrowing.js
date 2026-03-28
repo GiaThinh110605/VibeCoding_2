@@ -35,29 +35,51 @@ router.get('/borrow', requireAuth, (req, res) => {
   res.render('borrowing/borrow', {
     title: 'Mượn sách',
     active: 'borrowing',
-    user: req.session.user
+    user: req.session.user,
+    query: req.query
   });
 });
 
 // Process borrowing
 router.post('/borrow', requireAuth, async (req, res) => {
   try {
-    const { reader_id, copy_id } = req.body;
+    let { reader_id, copy_id } = req.body;
+
+    if (!reader_id || !copy_id) {
+      return res.redirect('/borrowing/borrow?error=Vui lòng điền đầy đủ thông tin mã độc giả và mã bản sao');
+    }
+
+    // Normalize inputs
+    reader_id = reader_id.trim().toUpperCase();
+    copy_id = copy_id.trim().toUpperCase();
 
     // Check if copy is available
     const copy = await pool.query(
-      'SELECT * FROM book_copies WHERE copy_id = $1 AND status = $2',
-      [copy_id, 'available']
+      'SELECT * FROM book_copies WHERE UPPER(copy_id) = $1',
+      [copy_id]
     );
 
     if (copy.rows.length === 0) {
-      return res.redirect('/borrowing/borrow?error=Sách không có sẵn để mượn hoặc mã bản sao không đúng');
+      return res.redirect(`/borrowing/borrow?error=Mã bản sao "${copy_id}" không tồn tại trong hệ thống`);
+    }
+
+    if (copy.rows[0].status !== 'available') {
+      return res.redirect(`/borrowing/borrow?error=Sách "${copy_id}" hiện đang ở trạng thái "${copy.rows[0].status}", không thể mượn`);
     }
 
     // Check if reader exists
-    const reader = await pool.query('SELECT reader_id FROM readers WHERE reader_id = $1', [reader_id]);
+    const reader = await pool.query('SELECT reader_id, full_name FROM readers WHERE UPPER(reader_id) = $1', [reader_id]);
     if (reader.rows.length === 0) {
-      return res.redirect('/borrowing/borrow?error=Không tìm thấy độc giả với mã này');
+      return res.redirect(`/borrowing/borrow?error=Không tìm thấy độc giả với mã "${reader_id}"`);
+    }
+
+    // Optional: Check if reader already has too many books (e.g., max 5)
+    const activeBorrowings = await pool.query(
+      'SELECT COUNT(*) FROM borrowing_transactions WHERE reader_id = $1 AND status = $2',
+      [reader_id, 'borrowed']
+    );
+    if (parseInt(activeBorrowings.rows[0].count) >= 5) {
+      return res.redirect(`/borrowing/borrow?error=Độc giả ${reader.rows[0].full_name} đã mượn tối đa 5 cuốn sách`);
     }
 
     // Calculate due date (14 days from now)
@@ -72,14 +94,14 @@ router.post('/borrow', requireAuth, async (req, res) => {
 
     // Update copy status
     await pool.query(
-      'UPDATE book_copies SET status = $1 WHERE copy_id = $2',
+      'UPDATE book_copies SET status = $1 WHERE UPPER(copy_id) = $2',
       ['borrowed', copy_id]
     );
 
     res.redirect('/borrowing?success=Mượn sách thành công');
   } catch (error) {
     console.error('Error processing borrow:', error);
-    res.redirect('/borrowing/borrow?error=Lỗi khi xử lý mượn sách. Vui lòng thử lại.');
+    res.redirect(`/borrowing/borrow?error=Lỗi hệ thống: ${error.message}`);
   }
 });
 
