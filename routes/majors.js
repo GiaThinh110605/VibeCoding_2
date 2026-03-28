@@ -19,7 +19,8 @@ router.get('/', requireAuth, async (req, res) => {
       title: 'Quản lý ngành học',
       active: 'majors',
       user: req.session.user,
-      majors: majors.rows
+      majors: majors.rows,
+      query: req.query
     });
   } catch (error) {
     console.error('Error loading majors:', error);
@@ -32,7 +33,8 @@ router.get('/add', requireAuth, (req, res) => {
   res.render('majors/add', {
     title: 'Thêm ngành học mới',
     active: 'majors',
-    user: req.session.user
+    user: req.session.user,
+    query: req.query
   });
 });
 
@@ -41,10 +43,14 @@ router.post('/add', requireAuth, async (req, res) => {
   try {
     const { major_id, major_name, description } = req.body;
 
+    if (!major_id || !major_name) {
+      return res.redirect('/majors/add?error=Vui lòng điền đầy đủ các thông tin bắt buộc.');
+    }
+
     // Check if major_id already exists
     const existingMajor = await pool.query('SELECT major_id FROM majors WHERE major_id = $1', [major_id]);
     if (existingMajor.rows.length > 0) {
-      return res.redirect('/majors/add?error=Mã ngành đã tồn tại. Vui lòng chọn mã khác.');
+      return res.redirect(`/majors/add?error=Mã ngành "${major_id}" đã tồn tại. Vui lòng chọn mã khác.`);
     }
 
     await pool.query(
@@ -55,7 +61,7 @@ router.post('/add', requireAuth, async (req, res) => {
     res.redirect('/majors?success=Thêm ngành học thành công');
   } catch (error) {
     console.error('Error adding major:', error);
-    res.redirect('/majors/add?error=Không thể thêm ngành học. Vui lòng thử lại.');
+    res.redirect(`/majors/add?error=Lỗi hệ thống: ${error.message}`);
   }
 });
 
@@ -75,7 +81,8 @@ router.get('/edit/:id', requireAuth, async (req, res) => {
       title: 'Chỉnh sửa ngành học',
       active: 'majors',
       user: req.session.user,
-      major: major.rows[0]
+      major: major.rows[0],
+      query: req.query
     });
   } catch (error) {
     console.error('Error loading major for edit:', error);
